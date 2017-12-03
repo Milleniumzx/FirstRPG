@@ -28,12 +28,19 @@ namespace Game2
         Vector2 _moveDirection;
         private Vector2 _yPosition;
         private SpriteFont theFont;
-        private float movespeed = 300;
+        private float movespeed = 600;
         private Effect _customEffect;
         private KeyboardState keyState;
         private GameObject _chicken;
         private Random _random;
-        
+        private int _score;
+        private Rectangle _chickenrectangle;
+        private Rectangle _playerRectangle;
+        Color[] playerTextureData;
+        Color[] chickenTextureData;
+
+
+
 
         public Game1()
         {
@@ -57,16 +64,24 @@ namespace Game2
             _playerCharacter = Content.Load<Texture2D>("playerChar");
             _moveDirection = new Vector2(0,0);
             _chicken = new GameObject(Content.Load<Texture2D>("chicken"));
+            
             _random = new Random();
             _yPosition = new Vector2(0,15);
+            _graphics.PreferredBackBufferWidth = 1280;
+            _graphics.PreferredBackBufferHeight = 720;
+            _graphics.ApplyChanges();
+            _chickenrectangle = new Rectangle(0, 0, 16, 16);
+
+
             this.IsMouseVisible = true;
             IsFixedTimeStep = false;
+            _score = 0;
 
 
 
 
 
-            _chickenPosition = new Vector2(_random.Next(0, 720), _random.Next(0, 400));
+            _chickenPosition = new Vector2(_random.Next(0, _graphics.GraphicsDevice.Viewport.Width-50), _random.Next(0, _graphics.GraphicsDevice.Viewport.Height - 50));
 
 
             base.Initialize();
@@ -127,12 +142,18 @@ namespace Game2
 
             if (Keyboard.GetState().IsKeyDown(Keys.A))
             {
-                GeneratePos(_chickenPosition);
+                GeneratePos();
             }
 
             //Debug.WriteLine($"Position: {_playerPosition.X}.{_playerPosition.Y}");
 
-            //boundary logic
+            /*boundary logic
+            if (_playerPosition.X - _chickenPosition.X < -3 && _playerPosition.Y - _chickenPosition.Y < -3)
+            {
+                _score++;
+                _chicken._exists = false;
+            }
+            */
             
             if (_playerPosition.X < 0)
             {
@@ -156,15 +177,33 @@ namespace Game2
 
             if (_chicken._exists == false)
             {
-                GeneratePos(_chickenPosition);
+                GeneratePos();
                 _chicken._exists = true;
             }
 
-            
+
 
 
             //collision
+            chickenTextureData = new Color[_chicken.Image.Width * _chicken.Image.Height];
+            _chicken.Image.GetData(chickenTextureData);
+            playerTextureData = new Color[_playerCharacter.Width * _playerCharacter.Height];
+            _playerCharacter.GetData(playerTextureData);
 
+
+            Rectangle _playerRectangle = new Rectangle((int)_playerPosition.X, (int)_playerPosition.Y, _playerCharacter.Width, _playerCharacter.Height);
+
+            _chickenrectangle.X = (int) _chickenPosition.X;
+            _chickenrectangle.Y = (int) _chickenPosition.Y;
+
+            if (IntersectPixels(_playerRectangle, playerTextureData, _chickenrectangle, chickenTextureData) == true)
+            {
+                _chicken._exists = false;
+                _score++;
+
+
+            }
+            
 
 
             // TODO: Add your update logic here
@@ -172,14 +211,54 @@ namespace Game2
             base.Update(gameTime);
         }
 
+        public static bool IntersectPixels(Rectangle rectangleA, Color[] dataA,
+            Rectangle rectangleB, Color[] dataB)
+        {
+            // Find the bounds of the rectangle intersection
+            int top = Math.Max(rectangleA.Top, rectangleB.Top);
+            int bottom = Math.Min(rectangleA.Bottom, rectangleB.Bottom);
+            int left = Math.Max(rectangleA.Left, rectangleB.Left);
+            int right = Math.Min(rectangleA.Right, rectangleB.Right);
+
+            // Check every point within the intersection bounds
+            for (int y = top; y < bottom; y++)
+            {
+                for (int x = left; x < right; x++)
+                {
+                    // Get the color of both pixels at this point
+                    Color colorA = dataA[(x - rectangleA.Left) +
+                                         (y - rectangleA.Top) * rectangleA.Width];
+                    Color colorB = dataB[(x - rectangleB.Left) +
+                                         (y - rectangleB.Top) * rectangleB.Width];
+
+                    // If both pixels are not completely transparent,
+                    if (colorA.A != 0 && colorB.A != 0)
+                    {
+                        // then an intersection has been found
+                        return true;
+                    }
+                }
+            }
+
+            // No intersection found
+            return false;
+        }
+
+
+
+
+
         private Random rng;
-        public void GeneratePos(Vector2 vector2)
+        public void GeneratePos()
         {
             rng = new Random();
             Debug.WriteLine("new random was made, proceeding...");
             
-            vector2.X = rng.Next(0, 720);
-            vector2.Y = rng.Next(0, 400);
+            //vector2.X = rng.Next(0, 720);
+            //vector2.Y = rng.Next(0, 400);
+            _chickenPosition.Y = rng.Next(50, _graphics.GraphicsDevice.Viewport.Height-50);
+            _chickenPosition.X = rng.Next(50, _graphics.GraphicsDevice.Viewport.Width-50);
+
         }
 
         /// <summary>
@@ -196,7 +275,8 @@ namespace Game2
             _spriteBatch.Draw(_playerCharacter, _playerPosition, Color.White);
             _spriteBatch.DrawString(theFont,$"Position: X:{_playerPosition.X}", Vector2.Zero, Color.White);
             _spriteBatch.DrawString(theFont, $"Position: Y:{_playerPosition.Y}", _yPosition, Color.White);
-            _spriteBatch.DrawString(theFont,$"Random: {rng.Next(0,720)} and Chicken position: {_chickenPosition}", _yPosition + _yPosition, Color.White);
+            _spriteBatch.DrawString(theFont,$"Chicken position: {_chickenPosition}", _yPosition + _yPosition, Color.White);
+            _spriteBatch.DrawString(theFont,$"Score: {_score}", _yPosition + (_yPosition * 2), Color.White);
             _spriteBatch.End();
 
             base.Draw(gameTime);
