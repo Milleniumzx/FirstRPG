@@ -17,7 +17,7 @@ namespace Game2
 {
     /// <summary>
     /// This is the main type for your game.
-    /// </summary>
+    /// </summary> hej fagot
     public class Game1 : Game
     {
         GraphicsDeviceManager _graphics;
