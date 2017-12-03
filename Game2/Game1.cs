@@ -117,25 +117,25 @@ namespace Game2
             //Debug.WriteLine($"Position: {_playerPosition.X}.{_playerPosition.Y}");
 
             //boundary logic
-            /*
-            if (playerPosition.X < 0)
+            
+            if (_playerPosition.X < 0)
             {
-                playerPosition.X = 0;
+                _playerPosition.X = 0;
             }
-            else if (playerPosition.X > graphics.GraphicsDevice.Viewport.Width - playerCharacter.Width)
+            else if (_playerPosition.X > _graphics.GraphicsDevice.Viewport.Width - _playerCharacter.Width)
             {
-                playerPosition.X = (graphics.GraphicsDevice.Viewport.Width - playerCharacter.Width);
+                _playerPosition.X = (_graphics.GraphicsDevice.Viewport.Width - _playerCharacter.Width);
             }
 
-            if (playerPosition.Y < 0)
+            if (_playerPosition.Y < 0)
             {
-                playerPosition.Y = 0;
+                _playerPosition.Y = 0;
             }
-            else if (playerPosition.Y > graphics.GraphicsDevice.Viewport.Height - playerCharacter.Height)
+            else if (_playerPosition.Y > _graphics.GraphicsDevice.Viewport.Height - _playerCharacter.Height)
             {
-                playerPosition.Y = (graphics.GraphicsDevice.Viewport.Height - playerCharacter.Height);
+                _playerPosition.Y = (_graphics.GraphicsDevice.Viewport.Height - _playerCharacter.Height);
             }
-            */
+            
             // TODO: Add your update logic here
 
             base.Update(gameTime);
