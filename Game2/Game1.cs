@@ -38,6 +38,8 @@ namespace Game2
         private Rectangle _playerRectangle;
         Color[] playerTextureData;
         Color[] chickenTextureData;
+        protected float scale = 1f;
+
 
 
 
@@ -64,14 +66,13 @@ namespace Game2
             _playerCharacter = Content.Load<Texture2D>("playerChar");
             _moveDirection = new Vector2(0,0);
             _chicken = new GameObject(Content.Load<Texture2D>("chicken"));
-            
             _random = new Random();
             _yPosition = new Vector2(0,15);
             _graphics.PreferredBackBufferWidth = 1280;
             _graphics.PreferredBackBufferHeight = 720;
             _graphics.ApplyChanges();
             _chickenrectangle = new Rectangle(0, 0, 16, 16);
-
+            scale = 2;
 
             this.IsMouseVisible = true;
             IsFixedTimeStep = false;
@@ -203,10 +204,11 @@ namespace Game2
 
 
             }
-            
 
+            float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             // TODO: Add your update logic here
+
 
             base.Update(gameTime);
         }
@@ -252,12 +254,13 @@ namespace Game2
         public void GeneratePos()
         {
             rng = new Random();
-            Debug.WriteLine("new random was made, proceeding...");
+            
             
             //vector2.X = rng.Next(0, 720);
             //vector2.Y = rng.Next(0, 400);
             _chickenPosition.Y = rng.Next(50, _graphics.GraphicsDevice.Viewport.Height-50);
             _chickenPosition.X = rng.Next(50, _graphics.GraphicsDevice.Viewport.Width-50);
+            Debug.WriteLine($"New random was made at {_chickenPosition.X}.{_chickenPosition.Y} - Spawning chicken");
 
         }
 
@@ -271,7 +274,8 @@ namespace Game2
 
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
-            _spriteBatch.Draw(_chicken.Image, _chickenPosition, Color.White);
+            //_spriteBatch.Draw(_chicken.Image, _chickenPosition, Color.White);
+            _spriteBatch.Draw(_chicken.Image, _chickenPosition, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
             _spriteBatch.Draw(_playerCharacter, _playerPosition, Color.White);
             _spriteBatch.DrawString(theFont,$"Position: X:{_playerPosition.X}", Vector2.Zero, Color.White);
             _spriteBatch.DrawString(theFont, $"Position: Y:{_playerPosition.Y}", _yPosition, Color.White);
