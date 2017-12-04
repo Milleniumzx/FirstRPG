@@ -33,3 +33,4 @@ C:\Users\Studio\source\repos\FirstRPG\Game2\bin\Windows\x86\Debug\MonoGame.Exten
 C:\Users\Studio\source\repos\FirstRPG\Game2\bin\Windows\x86\Debug\Newtonsoft.Json.xml
 C:\Users\Studio\source\repos\FirstRPG\Game2\bin\Windows\x86\Debug\Content\theFont.xnb
 C:\Users\Studio\source\repos\FirstRPG\Game2\bin\Windows\x86\Debug\Content\chicken.xnb
+C:\Users\Studio\source\repos\FirstRPG\Game2\bin\Windows\x86\Debug\Content\tilesets\tiled_tilesets\dungeon_tiles_compact_and_varied.xnb

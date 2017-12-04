@@ -12,6 +12,7 @@ using MonoGame.Extended.Tiled;
 using MonoGame.Extended.Tiled.Graphics;
 using MonoGame.Extended.Tiled.Graphics.Effects;
 using MonoGame.Extended.ViewportAdapters;
+using System.Xml.Linq;
 
 namespace Game2
 {
@@ -39,6 +40,7 @@ namespace Game2
         Color[] playerTextureData;
         Color[] chickenTextureData;
         protected float scale = 1f;
+        private Tile[,] tileset;
 
 
 
@@ -73,19 +75,70 @@ namespace Game2
             _graphics.ApplyChanges();
             _chickenrectangle = new Rectangle(0, 0, 16, 16);
             scale = 2;
+        
 
             this.IsMouseVisible = true;
             IsFixedTimeStep = false;
             _score = 0;
 
-
-
-
-
             _chickenPosition = new Vector2(_random.Next(0, _graphics.GraphicsDevice.Viewport.Width-50), _random.Next(0, _graphics.GraphicsDevice.Viewport.Height - 50));
 
-
             base.Initialize();
+
+            tileset = GetTileset();
+        }
+
+        public Tile[,] GetTileset()
+        {
+            //Load from dungeon01.tmx
+            XDocument xDoc = XDocument.Load("Content/dungeon01.tmx");
+            int mapwidth = int.Parse(xDoc.Root.Attribute("width").Value);
+            int mapheight = int.Parse(xDoc.Root.Attribute("height").Value);
+            int tilecount = 105; //int.Parse(xDoc.Root.Element("tileset").Attribute("tilecount").Value);
+            int columns = 21; //int.Parse(xDoc.Root.Element("tileset").Attribute("columns").Value);
+            //Above commented code returns null for reasons unknown to mankind - manual insertion done temporarily.
+
+            //Make arrays and a split char struct to seperate values
+            string IDArray = xDoc.Root.Element("layer").Element("data").Value;
+            string[] splitArray = IDArray.Split(',');
+
+            int[,] intIDs = new int[mapwidth, mapheight];
+
+            for (int x = 0; x < mapwidth; x++)
+            {
+                for (int y = 0; y < mapheight; y++)
+                {
+                    intIDs[x, y] = int.Parse(splitArray[x + y * mapwidth]);
+                }
+            }
+
+            int key = 0;
+            Vector2[] sourcePos = new Vector2[tilecount];
+            for (int x = 0; x < tilecount / columns; x++)
+            {
+                for (int y = 0; y < columns; y++)
+                {
+                    sourcePos[key] = new Vector2(y * 16, x * 16);
+                    key++;
+                }
+            }
+
+            Texture2D sourceTex = Content.Load<Texture2D>("tilesets/tiled_tilesets/dungeon_tiles_compact_and_varied");
+
+            Tile[,] tiles = new Tile[mapwidth, mapheight];
+            for (int x = 0; x < mapwidth; x++)
+            {
+                for (int y = 0; y < mapheight; y++)
+                {
+                    tiles[x, y] = new Tile
+                    (
+                        new Vector2(x * 16, y * 16),
+                        sourceTex,
+                        new Rectangle((int)sourcePos[intIDs[x, y]].X, (int)sourcePos[intIDs[x, y]].Y, 16, 16)
+                    );
+                }
+            }
+            return tiles;
         }
 
         /// <summary>
@@ -275,6 +328,11 @@ namespace Game2
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
             //_spriteBatch.Draw(_chicken.Image, _chickenPosition, Color.White);
+            foreach (var t in tileset)
+            {
+                t.Draw(_spriteBatch);
+                //Doesn't work as intended, but i'm too tired to fix this shit
+            }
             _spriteBatch.Draw(_chicken.Image, _chickenPosition, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
             _spriteBatch.Draw(_playerCharacter, _playerPosition, Color.White);
             _spriteBatch.DrawString(theFont,$"Position: X:{_playerPosition.X}", Vector2.Zero, Color.White);
