@@ -100,6 +100,7 @@ namespace Game2
 
             //Make arrays and a split char struct to seperate values
             string IDArray = xDoc.Root.Element("layer").Element("data").Value;
+            //something something split the array with the , seperator.
             string[] splitArray = IDArray.Split(',');
 
             int[,] intIDs = new int[mapwidth, mapheight];
@@ -112,6 +113,7 @@ namespace Game2
                 }
             }
 
+            //Tile selection - -16 in Y because of a weird offset.
             int key = 0;
             Vector2[] sourcePos = new Vector2[tilecount];
             for (int x = 0; x < tilecount / columns; x++)
@@ -123,8 +125,10 @@ namespace Game2
                 }
             }
 
+            //loading the tileset png
             Texture2D sourceTex = Content.Load<Texture2D>("tilesets/tiled_tilesets/dungeon_tiles_compact_and_varied");
 
+            //filling in the right tiles based on tmx map data.
             Tile[,] tiles = new Tile[mapwidth, mapheight];
             for (int x = 0; x < mapwidth; x++)
             {
@@ -209,6 +213,7 @@ namespace Game2
             }
             */
             
+            //Boundary logic
             if (_playerPosition.X < 0)
             {
                 _playerPosition.X = 0;
@@ -228,7 +233,6 @@ namespace Game2
             }
 
             //chicken logic
-
             if (_chicken._exists == false)
             {
                 GeneratePos();
