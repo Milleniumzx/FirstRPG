@@ -118,7 +118,7 @@ namespace Game2
             {
                 for (int y = 0; y < columns; y++)
                 {
-                    sourcePos[key] = new Vector2(y * 16, x * 16);
+                    sourcePos[key] = new Vector2(y * 16 - 16, x * 16);
                     key++;
                 }
             }
