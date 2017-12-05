@@ -18,6 +18,7 @@ namespace Game2
 {
     /// <summary>
     /// This is the main type for your game.
+    /// Master branch pls
     /// </summary>
     public class Game1 : Game
     {
