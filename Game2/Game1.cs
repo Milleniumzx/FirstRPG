@@ -41,7 +41,7 @@ namespace Game2
         private Tile[,] tileset;
         private Vector2 _targetPos;
         private PlayerCharacter player;
-
+        private Vector2 x2y2;
 
         public Vector2 TargetPos
         {
@@ -67,8 +67,7 @@ namespace Game2
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            PlayerCharacter player = new PlayerCharacter("faggot", 100);
-            player._playerPosition = new Vector2(100, 100);
+            player = new PlayerCharacter("faggot", 100);
             player._playerCharacter = Content.Load<Texture2D>("playerChar");
             _moveDirection = new Vector2(0,0);
             _chicken = new GameObject(Content.Load<Texture2D>("chicken"));
@@ -78,18 +77,18 @@ namespace Game2
             _graphics.PreferredBackBufferHeight = 720;
             _graphics.ApplyChanges();
             _chickenrectangle = new Rectangle(0, 0, 16, 16);
+            _chickenPosition = new Vector2(_random.Next(0, _graphics.GraphicsDevice.Viewport.Width - 50), _random.Next(0, _graphics.GraphicsDevice.Viewport.Height - 50));
             TargetPos = new Vector2(0,0);
             scale = 2;
-        
+            MouseInput.LastMouseState = MouseInput.MouseState;
+            MouseInput.MouseState = Mouse.GetState();
+
 
             this.IsMouseVisible = true;
             IsFixedTimeStep = false;
             _score = 0;
 
-            _chickenPosition = new Vector2(_random.Next(0, _graphics.GraphicsDevice.Viewport.Width-50), _random.Next(0, _graphics.GraphicsDevice.Viewport.Height - 50));
-
             base.Initialize();
-
             tileset = GetTileset();
         }
 
@@ -177,6 +176,27 @@ namespace Game2
         /// checking for collisions, gathering input, and playing audio.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        /// 
+        /// 
+        /// 
+        void PlayerUpdate(GameTime gameTime)
+        {
+            float dT = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            player._playerPosition.X += player._playerVelocity.X * dT;
+            player._playerPosition.Y += player._playerVelocity.Y * dT;
+                
+            player.CheckDest(x2y2, player._playerPosition);
+
+
+            if ((MouseInput.MouseState.RightButton == ButtonState.Pressed) && (player.moving == false))
+            {
+                x2y2.X = MouseInput.MouseState.X;
+                x2y2.Y = MouseInput.MouseState.Y;
+
+                player.Move(x2y2, player._playerPosition);
+
+            }
+        }
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -325,7 +345,7 @@ namespace Game2
             float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             // TODO: Add your update logic here
-
+            PlayerUpdate(gameTime);
 
             base.Update(gameTime);
         }
