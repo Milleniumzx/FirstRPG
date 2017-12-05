@@ -51,6 +51,7 @@ namespace Game2
         private float movespeed_y;
         private float movespeed_xE;
         private float movespeed_yE;
+        private Vector2 winScreen;
 
         public Vector2 TargetPos
         {
@@ -93,6 +94,7 @@ namespace Game2
             _graphics.PreferredBackBufferHeight = 720;
             _graphics.ApplyChanges();
             _chickenrectangle = new Rectangle(0, 0, 16, 16);
+            winScreen = new Vector2(600, 400);
             _chickenPosition = new Vector2(_random.Next(0, _graphics.GraphicsDevice.Viewport.Width - 50), _random.Next(0, _graphics.GraphicsDevice.Viewport.Height - 50));
             TargetPos = new Vector2(0,0);
             TargetPosE = new Vector2(0, 0);
@@ -283,8 +285,8 @@ namespace Game2
             if (goal_distE > speed_per_tickE)
             {
                 ratioE = speed_per_tickE / goal_distE;
-                movespeed_xE = (ratioE * delta_x1E) + 1;
-                movespeed_yE = (ratioE * delta_y1E) + 1;
+                movespeed_xE = (ratioE * delta_x1E);
+                movespeed_yE = (ratioE * delta_y1E);
                 enemy._playerPosition.X = movespeed_xE + enemy._playerPosition.X + 1;
                 enemy._playerPosition.Y = movespeed_yE + enemy._playerPosition.Y + 1;
             }
@@ -294,8 +296,8 @@ namespace Game2
                 //player._playerPosition.X = TargetPos.X;
                 //player._playerPosition.Y = TargetPos.Y;
                 enemy.movespeed = 0;
-                //enemy._playerPosition.X -= 2; //this makes it go faster down right but no stuck
-               // enemy._playerPosition.Y -= 2;
+                enemy._playerPosition.X -= 2; //this makes it go faster down right but no stuck
+                enemy._playerPosition.Y -= 2;
             }
 
 
@@ -557,6 +559,53 @@ namespace Game2
             _spriteBatch.DrawString(theFont,$"Score: {_score}", _yPosition + (_yPosition * 2), Color.White);
             _spriteBatch.DrawString(theFont, $"Enemy Score: {_scoreE}", _yPosition + (_yPosition * 3), Color.White);
             _spriteBatch.End();
+
+            if (_score >= 10)
+            {
+                GraphicsDevice.Clear(Color.Black);
+                _spriteBatch.Begin();
+                _spriteBatch.DrawString(theFont, "You Win! Press Y to restart!", winScreen, Color.White);
+                _spriteBatch.End();
+            }
+            else if (_scoreE >= 10)
+            {
+                GraphicsDevice.Clear(Color.Black);
+                _spriteBatch.Begin();
+                _spriteBatch.DrawString(theFont, "You Lose! Press Y to restart!", winScreen, Color.White);
+                _spriteBatch.End();
+            }
+
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Y == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Y))
+            {
+                player._playerPosition.X = 100;
+                player._playerPosition.Y = 100;
+                enemy._playerPosition.X = 100;
+                enemy._playerPosition.Y = 100;
+
+                _scoreE = 0;
+                _score = 0;
+                GraphicsDevice.Clear(Color.Black);
+
+                // TODO: Add your drawing code here
+                _spriteBatch.Begin();
+                //_spriteBatch.Draw(_chicken.Image, _chickenPosition, Color.White);
+                foreach (var t in tileset)
+                {
+                    t.Draw(_spriteBatch);
+                    //Doesn't work as intended, but i'm too tired to fix this shit
+                }
+                _spriteBatch.Draw(_chicken.Image, _chickenPosition, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+                _spriteBatch.Draw(player._playerCharacter, player._playerPosition, Color.White);
+                _spriteBatch.Draw(_chicken.Image, enemy._playerPosition, Color.Blue);
+                _spriteBatch.DrawString(theFont, $"Position: X:{player._playerPosition.X}", Vector2.Zero, Color.White);
+                _spriteBatch.DrawString(theFont, $"Position: Y:{player._playerPosition.Y}", _yPosition, Color.White);
+                _spriteBatch.DrawString(theFont, $"Chicken position: {_chickenPosition}", _yPosition + _yPosition, Color.White);
+                _spriteBatch.DrawString(theFont, $"Score: {_score}", _yPosition + (_yPosition * 2), Color.White);
+                _spriteBatch.DrawString(theFont, $"Enemy Score: {_scoreE}", _yPosition + (_yPosition * 3), Color.White);
+                _spriteBatch.End();
+            }
+
+
 
             base.Draw(gameTime);
 
