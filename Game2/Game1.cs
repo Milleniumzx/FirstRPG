@@ -239,7 +239,7 @@ namespace Game2
 
             MouseInput.LastMouseState = MouseInput.MouseState;
             MouseInput.MouseState = Mouse.GetState();
-            float speed_per_tick = 2;
+            float speed_per_tick = 25;
             float delta_x1 = TargetPos.X - player._playerPosition.X;
             float delta_x2 = player._playerPosition.X - TargetPos.X;
             float delta_y1 = TargetPos.Y - player._playerPosition.Y;
@@ -247,11 +247,32 @@ namespace Game2
             float goal_dist = (float)Math.Sqrt((delta_x1 * delta_x1) + (delta_y1 * delta_y1));
             float ratio;
 
-            if (MouseInput.LastMouseState.LeftButton == ButtonState.Released && MouseInput.MouseState.LeftButton == ButtonState.Pressed)
+            //if (MouseInput.LastMouseState.LeftButton == ButtonState.Released && MouseInput.MouseState.LeftButton == ButtonState.Pressed)
+            //{
+                //_targetPos.X = (MouseInput.getMouseX() - 40);
+                //_targetPos.Y = (MouseInput.getMouseY() - 40);
+
+            if (player.moving == false)
             {
-                _targetPos.X = (MouseInput.getMouseX() - 40);
-                _targetPos.Y = (MouseInput.getMouseY() - 40);
+                if (delta_x1 < delta_x2)
+                {
+                    _targetPos.X += 40;
+                    player.moving = true;
+                }
+                else
+                {
+                    _targetPos.X -= 40;
+                    player.moving = true;
+                }
+
             }
+            else
+            {
+                _targetPos.X = _chickenPosition.X - 30;
+                _targetPos.Y = _chickenPosition.Y - 30;
+
+            }
+
 
             if (goal_dist > speed_per_tick)
             {
