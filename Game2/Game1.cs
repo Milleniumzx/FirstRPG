@@ -19,7 +19,6 @@ namespace Game2
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    /// Thisshitbetterwork
     public class Game1 : Game
     {
         GraphicsDeviceManager _graphics;
@@ -240,7 +239,7 @@ namespace Game2
 
             MouseInput.LastMouseState = MouseInput.MouseState;
             MouseInput.MouseState = Mouse.GetState();
-            float speed_per_tick = 25;
+            float speed_per_tick = 2;
             float delta_x1 = TargetPos.X - player._playerPosition.X;
             float delta_x2 = player._playerPosition.X - TargetPos.X;
             float delta_y1 = TargetPos.Y - player._playerPosition.Y;
@@ -248,41 +247,20 @@ namespace Game2
             float goal_dist = (float)Math.Sqrt((delta_x1 * delta_x1) + (delta_y1 * delta_y1));
             float ratio;
 
-            //if (MouseInput.LastMouseState.LeftButton == ButtonState.Released && MouseInput.MouseState.LeftButton == ButtonState.Pressed)
-            //{
-                //_targetPos.X = (MouseInput.getMouseX() - 40);
-                //_targetPos.Y = (MouseInput.getMouseY() - 40);
+            if (MouseInput.LastMouseState.LeftButton == ButtonState.Released && MouseInput.MouseState.LeftButton == ButtonState.Pressed || MouseInput.MouseState.LeftButton == ButtonState.Pressed)
 
-            //BOT LOGIC HERE LOL - MADE BY KEVIN
-            if (player.moving == false)
-            {
-                if (delta_x1 < delta_x2)
                 {
-                    _targetPos.X += 40;
-                    player.moving = true;
-                }
-                else
-                {
-                    _targetPos.X -= 40;
-                    player.moving = true;
-                }
-
+                    _targetPos.X = (MouseInput.getMouseX() - 40);
+                _targetPos.Y = (MouseInput.getMouseY() - 40);
             }
-            else
-            {
-                _targetPos.X = _chickenPosition.X - 40;
-                _targetPos.Y = _chickenPosition.Y - 40;
-
-            }
-
 
             if (goal_dist > speed_per_tick)
             {
                 ratio = speed_per_tick / goal_dist;
-                movespeed_x = (ratio * delta_x1)+1;
-                movespeed_y = (ratio * delta_y1)+1;
-                player._playerPosition.X = movespeed_x + player._playerPosition.X+1;
-                player._playerPosition.Y = movespeed_y + player._playerPosition.Y+1;
+                movespeed_x = ratio * delta_x1;
+                movespeed_y = ratio * delta_y1;
+                player._playerPosition.X = movespeed_x + player._playerPosition.X;
+                player._playerPosition.Y = movespeed_y + player._playerPosition.Y;
             }
             else //if (Math.Abs(delta_x2) < player.movespeed && Math.Abs(delta_y2) < player.movespeed)
             {
@@ -290,9 +268,8 @@ namespace Game2
                 //player._playerPosition.X = TargetPos.X;
                 //player._playerPosition.Y = TargetPos.Y;
                 player.movespeed = 0;
-                player._playerPosition.X += 5;
-                player._playerPosition.Y += 5;
             }
+
 
             //if (Math.Abs(delta_x2) < player.movespeed)
             //{
