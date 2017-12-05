@@ -253,7 +253,7 @@ namespace Game2
                 //_targetPos.X = (MouseInput.getMouseX() - 40);
                 //_targetPos.Y = (MouseInput.getMouseY() - 40);
 
-            //BOT LOGIC HERE LOL
+            //BOT LOGIC HERE LOL - MADE BY KEVIN
             if (player.moving == false)
             {
                 if (delta_x1 < delta_x2)
