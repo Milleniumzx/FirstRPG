@@ -42,6 +42,8 @@ namespace Game2
         private Vector2 _targetPos;
         private PlayerCharacter player;
         private Vector2 x2y2;
+        private float movespeed_x;
+        private float movespeed_y;
 
         public Vector2 TargetPos
         {
@@ -179,24 +181,24 @@ namespace Game2
         /// 
         /// 
         /// 
-        void PlayerUpdate(GameTime gameTime)
-        {
-            float dT = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            player._playerPosition.X += player._playerVelocity.X * dT;
-            player._playerPosition.Y += player._playerVelocity.Y * dT;
+        //void PlayerUpdate(GameTime gameTime)
+        //{
+        //    float dT = (float)gameTime.ElapsedGameTime.TotalSeconds;
+        //    player._playerPosition.X += player._playerVelocity.X * dT;
+        //    player._playerPosition.Y += player._playerVelocity.Y * dT;
                 
-            player.CheckDest(x2y2, player._playerPosition);
+        //    player.CheckDest(x2y2, player._playerPosition);
 
 
-            if ((MouseInput.MouseState.RightButton == ButtonState.Pressed) && (player.moving == false))
-            {
-                x2y2.X = MouseInput.MouseState.X;
-                x2y2.Y = MouseInput.MouseState.Y;
+        //    if ((MouseInput.MouseState.RightButton == ButtonState.Pressed) && (player.moving == false))
+        //    {
+        //        x2y2.X = MouseInput.MouseState.X;
+        //        x2y2.Y = MouseInput.MouseState.Y;
 
-                player.Move(x2y2, player._playerPosition);
+        //        player.Move(x2y2, player._playerPosition);
 
-            }
-        }
+        //    }
+        //}
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -234,52 +236,80 @@ namespace Game2
 
 
             //Click to move
-            
-            //MouseInput.LastMouseState = MouseInput.MouseState;
-            //MouseInput.MouseState = Mouse.GetState();
- 
 
-            //if (MouseInput.LastMouseState.LeftButton == ButtonState.Released && MouseInput.MouseState.LeftButton == ButtonState.Pressed)
-            //{
-            //    _targetPos.X = (MouseInput.getMouseX()-40);
-            //    _targetPos.Y = (MouseInput.getMouseY()-40);
-            //}
+            MouseInput.LastMouseState = MouseInput.MouseState;
+            MouseInput.MouseState = Mouse.GetState();
 
-            //if (Math.Abs(_playerPosition.X - TargetPos.X) < movespeed)
-            //{
-            //    //handle the case where we're very close and would over shoot the position by moving
-            //    _playerPosition.X = TargetPos.X;
-            //}
-            //else if (_playerPosition.X < TargetPos.X)
-            //{
-            //    //we're at a position less than the target, add to our position
-            //    movespeed_x = (TargetPos.X - _playerPosition.X)/80;
-            //    _playerPosition.X += movespeed_x;
-            //}
-            //else if (_playerPosition.X > TargetPos.X)
-            //{
-            //    //we're at a position greater than the target, subtract from our position
-            //    movespeed_x = (_playerPosition.X - TargetPos.X)/80;
-            //    _playerPosition.X -= movespeed_x;
-            //}
 
-            //if (Math.Abs(_playerPosition.Y - TargetPos.Y) < movespeed)
-            //{
-            //    //handle the case where we're very close and would over shoot the position by moving
-            //    _playerPosition.Y = TargetPos.Y;
-            //}
-            //else if (_playerPosition.Y < TargetPos.Y)
-            //{
-            //    //we're at a position less than the target, add to our position
-            //    movespeed_y = (TargetPos.Y - _playerPosition.Y)/80;
-            //    _playerPosition.Y += movespeed_y;
-            //}
-            //else if (_playerPosition.Y > TargetPos.Y)
-            //{
-            //    //we're at a position greater than the target, subtract from our position
-            //    movespeed_y = (_playerPosition.Y - TargetPos.Y)/80;
-            //    _playerPosition.Y -= movespeed_y;
-            //}
+            if (MouseInput.LastMouseState.LeftButton == ButtonState.Released && MouseInput.MouseState.LeftButton == ButtonState.Pressed)
+            {
+                _targetPos.X = (MouseInput.getMouseX() - 40);
+                _targetPos.Y = (MouseInput.getMouseY() - 40);
+            }
+
+            if (Math.Abs(player._playerPosition.X - TargetPos.X) < player.movespeed)
+            {
+                //handle the case where we're very close and would over shoot the position by moving
+                player._playerPosition.X = TargetPos.X;
+            }
+            else if (player._playerPosition.X < TargetPos.X)
+            {
+                if (TargetPos.X - player._playerPosition.X > TargetPos.Y - player._playerPosition.Y)
+                {
+                    movespeed_x = 4;
+                }
+                else
+                {
+                    movespeed_x = 2;
+                }
+                player._playerPosition.X += movespeed_x;
+                //we're at a position less than the target, add to our position
+
+            }
+            else if (player._playerPosition.X > TargetPos.X)
+            {
+                if (player._playerPosition.X - TargetPos.X > player._playerPosition.Y - TargetPos.Y)
+                {
+                    movespeed_x = 4;
+                }
+                else
+                {
+                    //we're at a position greater than the target, subtract from our position
+                    movespeed_x = 2 ;
+                }
+                player._playerPosition.X -= movespeed_x;
+            }
+
+            if (Math.Abs(player._playerPosition.Y - TargetPos.Y) < player.movespeed)
+            {
+                //handle the case where we're very close and would over shoot the position by moving
+                player._playerPosition.Y = TargetPos.Y;
+            }
+            else if (player._playerPosition.Y < TargetPos.Y)
+            {
+                if (TargetPos.Y - player._playerPosition.Y > TargetPos.X - player._playerPosition.X)
+                {
+                    movespeed_y = 4;
+                }
+                else
+                {
+                    movespeed_y = 2;
+                }
+                player._playerPosition.Y += movespeed_y;
+            }
+            else if (player._playerPosition.Y > TargetPos.Y)
+            {
+                if (player._playerPosition.Y - TargetPos.Y > player._playerPosition.X - TargetPos.X)
+                {
+                    movespeed_y = 4;
+                }
+                else
+                {
+                    //we're at a position greater than the target, subtract from our position
+                    movespeed_y = 2;
+                }
+                player._playerPosition.Y -= movespeed_y;
+            }
 
 
 
@@ -345,7 +375,7 @@ namespace Game2
             float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             // TODO: Add your update logic here
-            PlayerUpdate(gameTime);
+            //PlayerUpdate(gameTime);
 
             base.Update(gameTime);
         }

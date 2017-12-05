@@ -36,7 +36,7 @@ namespace Game2
             _name = name;
             _health = health;
             _playerPosition = new Vector2(100, 100);
-            _playerVelocity = Vector2.Zero;
+            _playerVelocity = Vector2.One;
             movespeed = 2;
             moving = false;
 
