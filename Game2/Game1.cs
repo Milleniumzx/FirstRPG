@@ -305,7 +305,7 @@ namespace Game2
 
             MouseInput.LastMouseState = MouseInput.MouseState;
             MouseInput.MouseState = Mouse.GetState();
-            float speed_per_tick = 4;
+            float speed_per_tick = 5;
             float delta_x1 = TargetPos.X - player._playerPosition.X;
             float delta_x2 = player._playerPosition.X - TargetPos.X;
             float delta_y1 = TargetPos.Y - player._playerPosition.Y;
@@ -577,6 +577,7 @@ namespace Game2
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Y == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Y))
             {
+                GeneratePos();
                 player._playerPosition.X = 100;
                 player._playerPosition.Y = 100;
                 enemy._playerPosition.X = 100;
