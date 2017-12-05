@@ -19,7 +19,7 @@ namespace Game2
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    /// testcommit
+    /// testcommit2
     public class Game1 : Game
     {
         GraphicsDeviceManager _graphics;
