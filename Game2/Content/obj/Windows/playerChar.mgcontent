@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <SourceFile>G:/FirstRPG/Game2/Content/playerChar.png</SourceFile>
-  <SourceTime>2017-12-05T18:12:28.332641+01:00</SourceTime>
-  <DestFile>G:/FirstRPG/Game2/Content/bin/Windows/playerChar.xnb</DestFile>
-  <DestTime>2017-12-05T18:15:04.156551+01:00</DestTime>
+  <SourceFile>C:/Users/Studio/source/repos/FirstRPG/Game2/Content/playerChar.png</SourceFile>
+  <SourceTime>2017-12-05T19:56:23.6044113+01:00</SourceTime>
+  <DestFile>C:/Users/Studio/source/repos/FirstRPG/Game2/Content/bin/Windows/playerChar.xnb</DestFile>
+  <DestTime>2017-12-05T22:32:09.2053559+01:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2017-03-01T16:05:36+01:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
