@@ -23,13 +23,11 @@ namespace Game2
     {
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
-        Texture2D _playerCharacter;
-        Vector2 _playerPosition;
+
         private Vector2 _chickenPosition;
         Vector2 _moveDirection;
         private Vector2 _yPosition;
         private SpriteFont theFont;
-        private float movespeed = 600;
         private Effect _customEffect;
         private KeyboardState keyState;
         private GameObject _chicken;
@@ -41,9 +39,15 @@ namespace Game2
         Color[] chickenTextureData;
         protected float scale = 1f;
         private Tile[,] tileset;
+        private Vector2 _targetPos;
+        private PlayerCharacter player;
 
 
-
+        public Vector2 TargetPos
+        {
+            get { return _targetPos; }
+            set { _targetPos = value; }
+        }
 
 
         public Game1()
@@ -63,9 +67,9 @@ namespace Game2
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            _playerPosition = new Vector2(100, 100);
-            
-            _playerCharacter = Content.Load<Texture2D>("playerChar");
+            PlayerCharacter player = new PlayerCharacter("faggot", 100);
+            player._playerPosition = new Vector2(100, 100);
+            player._playerCharacter = Content.Load<Texture2D>("playerChar");
             _moveDirection = new Vector2(0,0);
             _chicken = new GameObject(Content.Load<Texture2D>("chicken"));
             _random = new Random();
@@ -74,6 +78,7 @@ namespace Game2
             _graphics.PreferredBackBufferHeight = 720;
             _graphics.ApplyChanges();
             _chickenrectangle = new Rectangle(0, 0, 16, 16);
+            TargetPos = new Vector2(0,0);
             scale = 2;
         
 
@@ -179,6 +184,8 @@ namespace Game2
                 Exit();
             }
 
+
+            /*
             keyState = Keyboard.GetState();
 
             if (Keyboard.GetState().IsKeyDown(Keys.Left))
@@ -203,6 +210,59 @@ namespace Game2
                 GeneratePos();
             }
 
+            */
+
+
+            //Click to move
+            
+            //MouseInput.LastMouseState = MouseInput.MouseState;
+            //MouseInput.MouseState = Mouse.GetState();
+ 
+
+            //if (MouseInput.LastMouseState.LeftButton == ButtonState.Released && MouseInput.MouseState.LeftButton == ButtonState.Pressed)
+            //{
+            //    _targetPos.X = (MouseInput.getMouseX()-40);
+            //    _targetPos.Y = (MouseInput.getMouseY()-40);
+            //}
+
+            //if (Math.Abs(_playerPosition.X - TargetPos.X) < movespeed)
+            //{
+            //    //handle the case where we're very close and would over shoot the position by moving
+            //    _playerPosition.X = TargetPos.X;
+            //}
+            //else if (_playerPosition.X < TargetPos.X)
+            //{
+            //    //we're at a position less than the target, add to our position
+            //    movespeed_x = (TargetPos.X - _playerPosition.X)/80;
+            //    _playerPosition.X += movespeed_x;
+            //}
+            //else if (_playerPosition.X > TargetPos.X)
+            //{
+            //    //we're at a position greater than the target, subtract from our position
+            //    movespeed_x = (_playerPosition.X - TargetPos.X)/80;
+            //    _playerPosition.X -= movespeed_x;
+            //}
+
+            //if (Math.Abs(_playerPosition.Y - TargetPos.Y) < movespeed)
+            //{
+            //    //handle the case where we're very close and would over shoot the position by moving
+            //    _playerPosition.Y = TargetPos.Y;
+            //}
+            //else if (_playerPosition.Y < TargetPos.Y)
+            //{
+            //    //we're at a position less than the target, add to our position
+            //    movespeed_y = (TargetPos.Y - _playerPosition.Y)/80;
+            //    _playerPosition.Y += movespeed_y;
+            //}
+            //else if (_playerPosition.Y > TargetPos.Y)
+            //{
+            //    //we're at a position greater than the target, subtract from our position
+            //    movespeed_y = (_playerPosition.Y - TargetPos.Y)/80;
+            //    _playerPosition.Y -= movespeed_y;
+            //}
+
+
+
             //Debug.WriteLine($"Position: {_playerPosition.X}.{_playerPosition.Y}");
 
             /*boundary logic
@@ -212,24 +272,24 @@ namespace Game2
                 _chicken._exists = false;
             }
             */
-            
+
             //Boundary logic
-            if (_playerPosition.X < 0)
+            if (player._playerPosition.X < 0)
             {
-                _playerPosition.X = 0;
+                player._playerPosition.X = 0;
             }
-            else if (_playerPosition.X > _graphics.GraphicsDevice.Viewport.Width - _playerCharacter.Width)
+            else if (player._playerPosition.X > _graphics.GraphicsDevice.Viewport.Width - player._playerCharacter.Width)
             {
-                _playerPosition.X = (_graphics.GraphicsDevice.Viewport.Width - _playerCharacter.Width);
+                player._playerPosition.X = (_graphics.GraphicsDevice.Viewport.Width - player._playerCharacter.Width);
             }
 
-            if (_playerPosition.Y < 0)
+            if (player._playerPosition.Y < 0)
             {
-                _playerPosition.Y = 0;
+                player._playerPosition.Y = 0;
             }
-            else if (_playerPosition.Y > _graphics.GraphicsDevice.Viewport.Height - _playerCharacter.Height)
+            else if (player._playerPosition.Y > _graphics.GraphicsDevice.Viewport.Height - player._playerCharacter.Height)
             {
-                _playerPosition.Y = (_graphics.GraphicsDevice.Viewport.Height - _playerCharacter.Height);
+                player._playerPosition.Y = (_graphics.GraphicsDevice.Viewport.Height - player._playerCharacter.Height);
             }
 
             //chicken logic
@@ -245,11 +305,11 @@ namespace Game2
             //collision
             chickenTextureData = new Color[_chicken.Image.Width * _chicken.Image.Height];
             _chicken.Image.GetData(chickenTextureData);
-            playerTextureData = new Color[_playerCharacter.Width * _playerCharacter.Height];
-            _playerCharacter.GetData(playerTextureData);
+            playerTextureData = new Color[player._playerCharacter.Width * player._playerCharacter.Height];
+            player._playerCharacter.GetData(playerTextureData);
 
 
-            Rectangle _playerRectangle = new Rectangle((int)_playerPosition.X, (int)_playerPosition.Y, _playerCharacter.Width, _playerCharacter.Height);
+            Rectangle _playerRectangle = new Rectangle((int)player._playerPosition.X, (int)player._playerPosition.Y, player._playerCharacter.Width, player._playerCharacter.Height);
 
             _chickenrectangle.X = (int) _chickenPosition.X;
             _chickenrectangle.Y = (int) _chickenPosition.Y;
@@ -308,6 +368,7 @@ namespace Game2
 
 
         private Random rng;
+
         public void GeneratePos()
         {
             rng = new Random();
@@ -338,9 +399,9 @@ namespace Game2
                 //Doesn't work as intended, but i'm too tired to fix this shit
             }
             _spriteBatch.Draw(_chicken.Image, _chickenPosition, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
-            _spriteBatch.Draw(_playerCharacter, _playerPosition, Color.White);
-            _spriteBatch.DrawString(theFont,$"Position: X:{_playerPosition.X}", Vector2.Zero, Color.White);
-            _spriteBatch.DrawString(theFont, $"Position: Y:{_playerPosition.Y}", _yPosition, Color.White);
+            _spriteBatch.Draw(player._playerCharacter, player._playerPosition, Color.White);
+            _spriteBatch.DrawString(theFont,$"Position: X:{player._playerPosition.X}", Vector2.Zero, Color.White);
+            _spriteBatch.DrawString(theFont, $"Position: Y:{player._playerPosition.Y}", _yPosition, Color.White);
             _spriteBatch.DrawString(theFont,$"Chicken position: {_chickenPosition}", _yPosition + _yPosition, Color.White);
             _spriteBatch.DrawString(theFont,$"Score: {_score}", _yPosition + (_yPosition * 2), Color.White);
             _spriteBatch.End();

@@ -45,6 +45,7 @@
     <Compile Include="CustomEffect.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="GameObject.cs" />
+    <Compile Include="MouseInput.cs" />
     <Compile Include="PlayerCamera.cs" />
     <Compile Include="PlayerCharacter.cs" />
     <Compile Include="Program.cs" />

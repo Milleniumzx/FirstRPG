@@ -10,11 +10,13 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Game2
 {
-    class PlayerCharacter
+    public class PlayerCharacter
     {
         private string _name;
         private int _health;
-        //private bool _isDead;
+        public Texture2D _playerCharacter;
+        public Vector2 _playerPosition;
+        public float movespeed = 2;
 
 
 
@@ -25,7 +27,8 @@ namespace Game2
         {
             _name = name;
             _health = health;
-        //    _isDead = false;
+
+            //    _isDead = false;
         }
 
 
