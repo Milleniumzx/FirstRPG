@@ -250,7 +250,7 @@ namespace Game2
             */
 
             //Enemy move logic
-            float speed_per_tickE = 2;
+            float speed_per_tickE = 5;
             float delta_x1E = TargetPosE.X - enemy._playerPosition.X;
             float delta_x2E = enemy._playerPosition.X - TargetPosE.X;
             float delta_y1E = TargetPosE.Y - enemy._playerPosition.Y;
@@ -262,20 +262,20 @@ namespace Game2
             {
                 if (delta_x1E < delta_x2E)
                 {
-                    _targetPosE.X += 40;
+                    _targetPosE.X += 5;
                     enemy.moving = true;
                 }
                 else
                 {
-                    _targetPosE.X -= 40;
+                    _targetPosE.X -= 5;
                     enemy.moving = true;
                 }
 
             }
             else
             {
-                _targetPosE.X = _chickenPosition.X - 25;
-                _targetPosE.Y = _chickenPosition.Y - 25;
+                _targetPosE.X = _chickenPosition.X - 5;
+                _targetPosE.Y = _chickenPosition.Y - 5;
 
             }
 
@@ -294,8 +294,8 @@ namespace Game2
                 //player._playerPosition.X = TargetPos.X;
                 //player._playerPosition.Y = TargetPos.Y;
                 enemy.movespeed = 0;
-                enemy._playerPosition.X += 5;
-                enemy._playerPosition.Y += 5;
+                //enemy._playerPosition.X -= 2; //this makes it go faster down right but no stuck
+               // enemy._playerPosition.Y -= 2;
             }
 
 
