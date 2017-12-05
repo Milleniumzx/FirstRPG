@@ -309,4 +309,7 @@ Game2/bin/Windows/x86/Debug/SharpDX.XAudio2.xml
 Game2/bin/Windows/x86/Debug/SharpDX.XInput.xml
 Game2/bin/Windows/x86/Debug/SharpDX.xml
 Game2/obj/x86/Debug/FirstRPG.csprojResolveAssemblyReference.cache
-Game2/obj/x86/Debug/
+Game2/obj/x86/
+Game2/bin/
+Game2/obj/Windows/
+Game2/bin/Windows/
