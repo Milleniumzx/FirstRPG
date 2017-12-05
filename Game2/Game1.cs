@@ -239,7 +239,13 @@ namespace Game2
 
             MouseInput.LastMouseState = MouseInput.MouseState;
             MouseInput.MouseState = Mouse.GetState();
-
+            float speed_per_tick = 2;
+            float delta_x1 = TargetPos.X - player._playerPosition.X;
+            float delta_x2 = player._playerPosition.X - TargetPos.X;
+            float delta_y1 = TargetPos.Y - player._playerPosition.Y;
+            float delta_y2 = player._playerPosition.Y - TargetPos.Y;
+            float goal_dist = (float)Math.Sqrt((delta_x1 * delta_x1) + (delta_y1 * delta_y1));
+            float ratio;
 
             if (MouseInput.LastMouseState.LeftButton == ButtonState.Released && MouseInput.MouseState.LeftButton == ButtonState.Pressed)
             {
@@ -247,69 +253,85 @@ namespace Game2
                 _targetPos.Y = (MouseInput.getMouseY() - 40);
             }
 
-            if (Math.Abs(player._playerPosition.X - TargetPos.X) < player.movespeed)
+            if (goal_dist > speed_per_tick)
+            {
+                ratio = speed_per_tick / goal_dist;
+                movespeed_x = ratio * delta_x1;
+                movespeed_y = ratio * delta_y1;
+                player._playerPosition.X = movespeed_x + player._playerPosition.X;
+                player._playerPosition.Y = movespeed_y + player._playerPosition.Y;
+            }
+            else //if (Math.Abs(delta_x2) < player.movespeed && Math.Abs(delta_y2) < player.movespeed)
             {
                 //handle the case where we're very close and would over shoot the position by moving
-                player._playerPosition.X = TargetPos.X;
-            }
-            else if (player._playerPosition.X < TargetPos.X)
-            {
-                if (TargetPos.X - player._playerPosition.X > TargetPos.Y - player._playerPosition.Y)
-                {
-                    movespeed_x = 4;
-                }
-                else
-                {
-                    movespeed_x = 2;
-                }
-                player._playerPosition.X += movespeed_x;
-                //we're at a position less than the target, add to our position
-
-            }
-            else if (player._playerPosition.X > TargetPos.X)
-            {
-                if (player._playerPosition.X - TargetPos.X > player._playerPosition.Y - TargetPos.Y)
-                {
-                    movespeed_x = 4;
-                }
-                else
-                {
-                    //we're at a position greater than the target, subtract from our position
-                    movespeed_x = 2 ;
-                }
-                player._playerPosition.X -= movespeed_x;
+                //player._playerPosition.X = TargetPos.X;
+                //player._playerPosition.Y = TargetPos.Y;
+                player.movespeed = 0;
             }
 
-            if (Math.Abs(player._playerPosition.Y - TargetPos.Y) < player.movespeed)
-            {
-                //handle the case where we're very close and would over shoot the position by moving
-                player._playerPosition.Y = TargetPos.Y;
-            }
-            else if (player._playerPosition.Y < TargetPos.Y)
-            {
-                if (TargetPos.Y - player._playerPosition.Y > TargetPos.X - player._playerPosition.X)
-                {
-                    movespeed_y = 4;
-                }
-                else
-                {
-                    movespeed_y = 2;
-                }
-                player._playerPosition.Y += movespeed_y;
-            }
-            else if (player._playerPosition.Y > TargetPos.Y)
-            {
-                if (player._playerPosition.Y - TargetPos.Y > player._playerPosition.X - TargetPos.X)
-                {
-                    movespeed_y = 4;
-                }
-                else
-                {
-                    //we're at a position greater than the target, subtract from our position
-                    movespeed_y = 2;
-                }
-                player._playerPosition.Y -= movespeed_y;
-            }
+            //if (Math.Abs(delta_x2) < player.movespeed)
+            //{
+            //    //handle the case where we're very close and would over shoot the position by moving
+            //    player._playerPosition.X = TargetPos.X;
+            //}
+            //else if (player._playerPosition.X < TargetPos.X)
+            //{
+            //    if (delta_x1 > delta_y1)
+            //    {
+            //        movespeed_x = 4;
+            //    }
+            //    else
+            //    {
+            //        movespeed_x = 2;
+            //    }
+            //    player._playerPosition.X += movespeed_x;
+            //    //we're at a position less than the target, add to our position
+
+            //}
+            //else if (player._playerPosition.X > TargetPos.X)
+            //{
+            //    if (delta_x2 > delta_y2)
+            //    {
+            //        movespeed_x = 4;
+            //    }
+            //    else
+            //    {
+            //        //we're at a position greater than the target, subtract from our position
+            //        movespeed_x = 2 ;
+            //    }
+            //    player._playerPosition.X -= movespeed_x;
+            //}
+
+            //if (Math.Abs(delta_y2) < player.movespeed)
+            //{
+            //    //handle the case where we're very close and would over shoot the position by moving
+            //    player._playerPosition.Y = TargetPos.Y;
+            //}
+            //else if (player._playerPosition.Y < TargetPos.Y)
+            //{
+            //    if (delta_y1 > delta_x1)
+            //    {
+            //        movespeed_y = 4;
+            //    }
+            //    else
+            //    {
+            //        movespeed_y = 2;
+            //    }
+            //    player._playerPosition.Y += movespeed_y;
+            //}
+            //else if (player._playerPosition.Y > TargetPos.Y)
+            //{
+            //    if (delta_y2 > delta_x2)
+            //    {
+            //        movespeed_y = 4;
+            //    }
+            //    else
+            //    {
+            //        //we're at a position greater than the target, subtract from our position
+            //        movespeed_y = 2;
+            //    }
+            //    player._playerPosition.Y -= movespeed_y;
+            //}
 
 
 
