@@ -268,8 +268,8 @@ namespace Game2
             }
             else
             {
-                _targetPos.X = _chickenPosition.X - 30;
-                _targetPos.Y = _chickenPosition.Y - 30;
+                _targetPos.X = _chickenPosition.X - 40;
+                _targetPos.Y = _chickenPosition.Y - 40;
 
             }
 
@@ -277,10 +277,10 @@ namespace Game2
             if (goal_dist > speed_per_tick)
             {
                 ratio = speed_per_tick / goal_dist;
-                movespeed_x = ratio * delta_x1;
-                movespeed_y = ratio * delta_y1;
-                player._playerPosition.X = movespeed_x + player._playerPosition.X;
-                player._playerPosition.Y = movespeed_y + player._playerPosition.Y;
+                movespeed_x = (ratio * delta_x1)+1;
+                movespeed_y = (ratio * delta_y1)+1;
+                player._playerPosition.X = movespeed_x + player._playerPosition.X+1;
+                player._playerPosition.Y = movespeed_y + player._playerPosition.Y+1;
             }
             else //if (Math.Abs(delta_x2) < player.movespeed && Math.Abs(delta_y2) < player.movespeed)
             {
@@ -288,6 +288,8 @@ namespace Game2
                 //player._playerPosition.X = TargetPos.X;
                 //player._playerPosition.Y = TargetPos.Y;
                 player.movespeed = 0;
+                player._playerPosition.X += 5;
+                player._playerPosition.Y += 5;
             }
 
             //if (Math.Abs(delta_x2) < player.movespeed)
