@@ -37,7 +37,7 @@ namespace Game2
             _health = health;
             _playerPosition = new Vector2(100, 100);
             _playerVelocity = Vector2.One;
-            movespeed = 2;
+            movespeed = 1000;
             moving = false;
 
             //    _isDead = false;

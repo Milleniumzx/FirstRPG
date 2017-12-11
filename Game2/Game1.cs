@@ -34,18 +34,22 @@ namespace Game2
         private Random _random;
         private int _score;
         private int _scoreE;
+        private int _scoreE2;
         private Rectangle _chickenrectangle;
         private Rectangle _playerRectangle;
         private Rectangle _enemyRectangle;
+        private Rectangle _enemy2Rectangle;
         Color[] playerTextureData;
         Color[] chickenTextureData;
         Color[] enemyTextureData;
+        Color[] enemy2TextureData;
         protected float scale = 1f;
         private Tile[,] tileset;
         private Vector2 _targetPos;
         private Vector2 _targetPosE;
         private PlayerCharacter player;
         private PlayerCharacter enemy;
+        private PlayerCharacter enemy2;
         private Vector2 x2y2;
         private float movespeed_x;
         private float movespeed_y;
@@ -83,12 +87,15 @@ namespace Game2
         {
             // TODO: Add your initialization logic here
             player = new PlayerCharacter("faggot", 100);
+            enemy2 = new PlayerCharacter("bigfaggot", 100);
             enemy = new PlayerCharacter("evilfaggot", 100);
+            enemy2._playerCharacter = Content.Load<Texture2D>("playerChar");
             player._playerCharacter = Content.Load<Texture2D>("playerChar");
-            enemy._playerCharacter = Content.Load<Texture2D>("chicken");
+            enemy._playerCharacter = Content.Load<Texture2D>("playerChar");
             _moveDirection = new Vector2(0,0);
             _chicken = new GameObject(Content.Load<Texture2D>("chicken"));
             _random = new Random();
+            keyState = new KeyboardState();
             _yPosition = new Vector2(0,15);
             _graphics.PreferredBackBufferWidth = 1280;
             _graphics.PreferredBackBufferHeight = 720;
@@ -224,117 +231,153 @@ namespace Game2
             }
 
 
-            /*
+
             keyState = Keyboard.GetState();
 
             if (Keyboard.GetState().IsKeyDown(Keys.Left))
             {
-                _playerPosition.X -= movespeed * (float) gameTime.ElapsedGameTime.TotalSeconds;
+                player._playerPosition.X -= enemy.movespeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.Right))
             {
-                _playerPosition.X += movespeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                player._playerPosition.X += enemy.movespeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.Up))
             {
-                _playerPosition.Y -= movespeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                player._playerPosition.Y -= enemy.movespeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.Down))
             {
-                _playerPosition.Y += movespeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                player._playerPosition.Y += enemy.movespeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.G))
+            {
+                enemy2._playerPosition.X -= enemy.movespeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.J))
+            {
+                enemy2._playerPosition.X += enemy.movespeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.Y))
+            {
+                enemy2._playerPosition.Y -= enemy.movespeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.H))
+            {
+                enemy2._playerPosition.Y += enemy.movespeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
 
             if (Keyboard.GetState().IsKeyDown(Keys.A))
             {
-                GeneratePos();
+                enemy._playerPosition.X -= enemy.movespeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
-
-            */
-
-            //Enemy move logic
-            float speed_per_tickE = 5;
-            float delta_x1E = TargetPosE.X - enemy._playerPosition.X;
-            float delta_x2E = enemy._playerPosition.X - TargetPosE.X;
-            float delta_y1E = TargetPosE.Y - enemy._playerPosition.Y;
-            float delta_y2E = enemy._playerPosition.Y - TargetPosE.Y;
-            float goal_distE = (float)Math.Sqrt((delta_x1E * delta_x1E) + (delta_y1E * delta_y1E));
-            float ratioE;
-
-            if (enemy.moving == false)
+            if (Keyboard.GetState().IsKeyDown(Keys.D))
             {
-                if (delta_x1E < delta_x2E)
-                {
-                    _targetPosE.X += 5;
-                    enemy.moving = true;
-                }
-                else
-                {
-                    _targetPosE.X -= 5;
-                    enemy.moving = true;
-                }
-
+                enemy._playerPosition.X += enemy.movespeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
-            else
+            if (Keyboard.GetState().IsKeyDown(Keys.W))
             {
-                _targetPosE.X = _chickenPosition.X - 5;
-                _targetPosE.Y = _chickenPosition.Y - 5;
-
+                enemy._playerPosition.Y -= enemy.movespeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
-
-
-            if (goal_distE > speed_per_tickE)
+            if (Keyboard.GetState().IsKeyDown(Keys.S))
             {
-                ratioE = speed_per_tickE / goal_distE;
-                movespeed_xE = (ratioE * delta_x1E);
-                movespeed_yE = (ratioE * delta_y1E);
-                enemy._playerPosition.X = movespeed_xE + enemy._playerPosition.X + 1;
-                enemy._playerPosition.Y = movespeed_yE + enemy._playerPosition.Y + 1;
-            }
-            else //if (Math.Abs(delta_x2) < player.movespeed && Math.Abs(delta_y2) < player.movespeed)
-            {
-                //handle the case where we're very close and would over shoot the position by moving
-                //player._playerPosition.X = TargetPos.X;
-                //player._playerPosition.Y = TargetPos.Y;
-                enemy.movespeed = 0;
-                enemy._playerPosition.X -= 2; //this makes it go faster down right but no stuck
-                enemy._playerPosition.Y -= 2;
+                enemy._playerPosition.Y += player.movespeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
 
 
-            //Click to move
 
-            MouseInput.LastMouseState = MouseInput.MouseState;
-            MouseInput.MouseState = Mouse.GetState();
-            float speed_per_tick = 5;
-            float delta_x1 = TargetPos.X - player._playerPosition.X;
-            float delta_x2 = player._playerPosition.X - TargetPos.X;
-            float delta_y1 = TargetPos.Y - player._playerPosition.Y;
-            float delta_y2 = player._playerPosition.Y - TargetPos.Y;
-            float goal_dist = (float)Math.Sqrt((delta_x1 * delta_x1) + (delta_y1 * delta_y1));
-            float ratio;
+            //if (Keyboard.GetState().IsKeyDown(Keys.A))
+            //{
+            //    GeneratePos();
+            //}
 
-            if (MouseInput.LastMouseState.LeftButton == ButtonState.Released && MouseInput.MouseState.LeftButton == ButtonState.Pressed || MouseInput.MouseState.LeftButton == ButtonState.Pressed)
 
-                {
-                    _targetPos.X = (MouseInput.getMouseX() - 40);
-                _targetPos.Y = (MouseInput.getMouseY() - 40);
-            }
 
-            if (goal_dist > speed_per_tick)
-            {
-                ratio = speed_per_tick / goal_dist;
-                movespeed_x = ratio * delta_x1;
-                movespeed_y = ratio * delta_y1;
-                player._playerPosition.X = movespeed_x + player._playerPosition.X;
-                player._playerPosition.Y = movespeed_y + player._playerPosition.Y;
-            }
-            else //if (Math.Abs(delta_x2) < player.movespeed && Math.Abs(delta_y2) < player.movespeed)
-            {
-                //handle the case where we're very close and would over shoot the position by moving
-                //player._playerPosition.X = TargetPos.X;
-                //player._playerPosition.Y = TargetPos.Y;
-                player.movespeed = 0;
-            }
+            ////Enemy move logic
+            //float speed_per_tickE = 5;
+            //float delta_x1E = TargetPosE.X - enemy._playerPosition.X;
+            //float delta_x2E = enemy._playerPosition.X - TargetPosE.X;
+            //float delta_y1E = TargetPosE.Y - enemy._playerPosition.Y;
+            //float delta_y2E = enemy._playerPosition.Y - TargetPosE.Y;
+            //float goal_distE = (float)Math.Sqrt((delta_x1E * delta_x1E) + (delta_y1E * delta_y1E));
+            //float ratioE;
+
+            //if (enemy.moving == false)
+            //{
+            //    if (delta_x1E < delta_x2E)
+            //    {
+            //        _targetPosE.X += 5;
+            //        enemy.moving = true;
+            //    }
+            //    else
+            //    {
+            //        _targetPosE.X -= 5;
+            //        enemy.moving = true;
+            //    }
+
+            //}
+            //else
+            //{
+            //    _targetPosE.X = _chickenPosition.X - 5;
+            //    _targetPosE.Y = _chickenPosition.Y - 5;
+
+            //}
+
+
+            //if (goal_distE > speed_per_tickE)
+            //{
+            //    ratioE = speed_per_tickE / goal_distE;
+            //    movespeed_xE = (ratioE * delta_x1E);
+            //    movespeed_yE = (ratioE * delta_y1E);
+            //    enemy._playerPosition.X = movespeed_xE + enemy._playerPosition.X + 1;
+            //    enemy._playerPosition.Y = movespeed_yE + enemy._playerPosition.Y + 1;
+            //}
+            //else //if (Math.Abs(delta_x2) < player.movespeed && Math.Abs(delta_y2) < player.movespeed)
+            //{
+            //    //handle the case where we're very close and would over shoot the position by moving
+            //    //player._playerPosition.X = TargetPos.X;
+            //    //player._playerPosition.Y = TargetPos.Y;
+            //    enemy.movespeed = 0;
+            //    enemy._playerPosition.X -= 2; //this makes it go faster down right but no stuck
+            //    enemy._playerPosition.Y -= 2;
+            //}
+
+
+            ////Click to move
+
+            //MouseInput.LastMouseState = MouseInput.MouseState;
+            //MouseInput.MouseState = Mouse.GetState();
+            //float speed_per_tick = 5;
+            //float delta_x1 = TargetPos.X - player._playerPosition.X;
+            //float delta_x2 = player._playerPosition.X - TargetPos.X;
+            //float delta_y1 = TargetPos.Y - player._playerPosition.Y;
+            //float delta_y2 = player._playerPosition.Y - TargetPos.Y;
+            //float goal_dist = (float)Math.Sqrt((delta_x1 * delta_x1) + (delta_y1 * delta_y1));
+            //float ratio;
+
+            //if (MouseInput.LastMouseState.LeftButton == ButtonState.Released && MouseInput.MouseState.LeftButton == ButtonState.Pressed || MouseInput.MouseState.LeftButton == ButtonState.Pressed)
+
+            //    {
+            //        _targetPos.X = (MouseInput.getMouseX() - 40);
+            //    _targetPos.Y = (MouseInput.getMouseY() - 40);
+            //}
+
+            //if (goal_dist > speed_per_tick)
+            //{
+            //    ratio = speed_per_tick / goal_dist;
+            //    movespeed_x = ratio * delta_x1;
+            //    movespeed_y = ratio * delta_y1;
+            //    player._playerPosition.X = movespeed_x + player._playerPosition.X;
+            //    player._playerPosition.Y = movespeed_y + player._playerPosition.Y;
+            //}
+            //else //if (Math.Abs(delta_x2) < player.movespeed && Math.Abs(delta_y2) < player.movespeed)
+            //{
+            //    //handle the case where we're very close and would over shoot the position by moving
+            //    //player._playerPosition.X = TargetPos.X;
+            //    //player._playerPosition.Y = TargetPos.Y;
+            //    player.movespeed = 0;
+            //}
 
 
 
@@ -434,6 +477,42 @@ namespace Game2
                 player._playerPosition.Y = (_graphics.GraphicsDevice.Viewport.Height - player._playerCharacter.Height);
             }
 
+            if (enemy._playerPosition.X < 0)
+            {
+                enemy._playerPosition.X = 0;
+            }
+            else if (enemy._playerPosition.X > _graphics.GraphicsDevice.Viewport.Width - enemy._playerCharacter.Width)
+            {
+                enemy._playerPosition.X = (_graphics.GraphicsDevice.Viewport.Width - enemy._playerCharacter.Width);
+            }
+
+            if (enemy._playerPosition.Y < 0)
+            {
+                enemy._playerPosition.Y = 0;
+            }
+            else if (enemy._playerPosition.Y > _graphics.GraphicsDevice.Viewport.Height - enemy._playerCharacter.Height)
+            {
+                enemy._playerPosition.Y = (_graphics.GraphicsDevice.Viewport.Height - enemy._playerCharacter.Height);
+            }
+
+            if (enemy2._playerPosition.X < 0)
+            {
+                enemy2._playerPosition.X = 0;
+            }
+            else if (enemy2._playerPosition.X > _graphics.GraphicsDevice.Viewport.Width - enemy2._playerCharacter.Width)
+            {
+                enemy2._playerPosition.X = (_graphics.GraphicsDevice.Viewport.Width - enemy2._playerCharacter.Width);
+            }
+
+            if (enemy2._playerPosition.Y < 0)
+            {
+                enemy2._playerPosition.Y = 0;
+            }
+            else if (enemy2._playerPosition.Y > _graphics.GraphicsDevice.Viewport.Height - enemy2._playerCharacter.Height)
+            {
+                enemy2._playerPosition.Y = (_graphics.GraphicsDevice.Viewport.Height - enemy2._playerCharacter.Height);
+            }
+
             //chicken logic
             if (_chicken._exists == false)
             {
@@ -451,10 +530,13 @@ namespace Game2
             player._playerCharacter.GetData(playerTextureData);
             enemyTextureData = new Color[enemy._playerCharacter.Width * enemy._playerCharacter.Height];
             enemy._playerCharacter.GetData(enemyTextureData);
+            enemy2TextureData = new Color[enemy2._playerCharacter.Width * enemy2._playerCharacter.Height];
+            enemy2._playerCharacter.GetData(enemy2TextureData);
 
 
             Rectangle _playerRectangle = new Rectangle((int)player._playerPosition.X, (int)player._playerPosition.Y, player._playerCharacter.Width, player._playerCharacter.Height);
             Rectangle _enemyRectangle = new Rectangle((int)enemy._playerPosition.X, (int)enemy._playerPosition.Y, enemy._playerCharacter.Width, enemy._playerCharacter.Height);
+            Rectangle _enemy2Rectangle = new Rectangle((int)enemy2._playerPosition.X, (int)enemy2._playerPosition.Y, enemy2._playerCharacter.Width, enemy2._playerCharacter.Height);
 
 
             _chickenrectangle.X = (int) _chickenPosition.X;
@@ -464,6 +546,13 @@ namespace Game2
             {
                 _chicken._exists = false;
                 _score++;
+
+
+            }
+            if (IntersectPixels(_enemy2Rectangle, enemy2TextureData, _chickenrectangle, chickenTextureData) == true)
+            {
+                _chicken._exists = false;
+                _scoreE2++;
 
 
             }
@@ -552,37 +641,48 @@ namespace Game2
             }
             _spriteBatch.Draw(_chicken.Image, _chickenPosition, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
             _spriteBatch.Draw(player._playerCharacter, player._playerPosition, Color.White);
-            _spriteBatch.Draw(_chicken.Image, enemy._playerPosition, Color.Blue);
+            _spriteBatch.Draw(enemy._playerCharacter, enemy._playerPosition, Color.Blue);
+            _spriteBatch.Draw(enemy2._playerCharacter, enemy2._playerPosition, Color.Red);
             _spriteBatch.DrawString(theFont,$"Position: X:{player._playerPosition.X}", Vector2.Zero, Color.White);
             _spriteBatch.DrawString(theFont, $"Position: Y:{player._playerPosition.Y}", _yPosition, Color.White);
             _spriteBatch.DrawString(theFont,$"Chicken position: {_chickenPosition}", _yPosition + _yPosition, Color.White);
             _spriteBatch.DrawString(theFont,$"Score: {_score}", _yPosition + (_yPosition * 2), Color.White);
             _spriteBatch.DrawString(theFont, $"Enemy Score: {_scoreE}", _yPosition + (_yPosition * 3), Color.White);
+            _spriteBatch.DrawString(theFont, $"player3 Score: {_scoreE2}", _yPosition + (_yPosition * 4), Color.White);
             _spriteBatch.End();
 
-            if (_score >= 10)
+            if (_score >= 15)
             {
                 GraphicsDevice.Clear(Color.Black);
                 _spriteBatch.Begin();
-                _spriteBatch.DrawString(theFont, "You Win! Press Y to restart!", winScreen, Color.White);
+                _spriteBatch.DrawString(theFont, "player1 Win! Press Y to restart!", winScreen, Color.White);
                 _spriteBatch.End();
             }
-            else if (_scoreE >= 10)
+            else if (_scoreE >= 15)
             {
                 GraphicsDevice.Clear(Color.Black);
                 _spriteBatch.Begin();
-                _spriteBatch.DrawString(theFont, "You Lose! Press Y to restart!", winScreen, Color.White);
+                _spriteBatch.DrawString(theFont, "player2 win! Press Y to restart!", winScreen, Color.White);
+                _spriteBatch.End();
+            }
+            else if (_scoreE2 >= 15)
+            {
+                GraphicsDevice.Clear(Color.Black);
+                _spriteBatch.Begin();
+                _spriteBatch.DrawString(theFont, "player3 win! Press Y to restart!", winScreen, Color.White);
                 _spriteBatch.End();
             }
 
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Y == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Y))
+            if (GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.B))
             {
                 GeneratePos();
                 player._playerPosition.X = 100;
                 player._playerPosition.Y = 100;
                 enemy._playerPosition.X = 100;
                 enemy._playerPosition.Y = 100;
-
+                enemy2._playerPosition.X = 100;
+                enemy2._playerPosition.Y = 100;
+                _scoreE2 = 0;
                 _scoreE = 0;
                 _score = 0;
                 GraphicsDevice.Clear(Color.Black);
@@ -597,12 +697,14 @@ namespace Game2
                 }
                 _spriteBatch.Draw(_chicken.Image, _chickenPosition, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
                 _spriteBatch.Draw(player._playerCharacter, player._playerPosition, Color.White);
-                _spriteBatch.Draw(_chicken.Image, enemy._playerPosition, Color.Blue);
+                _spriteBatch.Draw(enemy2._playerCharacter, enemy2._playerPosition, Color.Red);
+                _spriteBatch.Draw(enemy._playerCharacter, enemy._playerPosition, Color.Blue);
                 _spriteBatch.DrawString(theFont, $"Position: X:{player._playerPosition.X}", Vector2.Zero, Color.White);
                 _spriteBatch.DrawString(theFont, $"Position: Y:{player._playerPosition.Y}", _yPosition, Color.White);
                 _spriteBatch.DrawString(theFont, $"Chicken position: {_chickenPosition}", _yPosition + _yPosition, Color.White);
                 _spriteBatch.DrawString(theFont, $"Score: {_score}", _yPosition + (_yPosition * 2), Color.White);
                 _spriteBatch.DrawString(theFont, $"Enemy Score: {_scoreE}", _yPosition + (_yPosition * 3), Color.White);
+                _spriteBatch.DrawString(theFont, $"player3 Score: {_scoreE2}", _yPosition + (_yPosition * 4), Color.White);
                 _spriteBatch.End();
             }
 
